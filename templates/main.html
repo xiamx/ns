@@ -19,7 +19,7 @@
     <a href="https://github.com/xiamx/ns"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/365986a132ccd6a44c23a9169022c0b5c890c387/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f7265645f6161303030302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png"></a>
     <div class="container">
       <h1 class="text-center">ns <sub>a news summarizer</sub></h1>
-        <input type="text" class="form-control input-lg" id="topic" placeholder="Enter a topic to search">
+        <input type="text" class="form-control input-lg" id="topic" placeholder="Enter a topic to search, try to be narrow and specific:)">
           <div id="branding"  style="float: left;"></div><br />
           <div id="summary" class="summary">
             
@@ -29,6 +29,8 @@
         <p>An automatic news summary generator</p>
         <h3>How does it work?</h3>
         <p>Using Google news api, we get a list of urls of multiple news sources. We then extract the article text from the webpages. SumBasic (Nenkova and Vanderwende 2005) algorithm is used to generate a summary.</p>
+        <h3>The summary does not make sense, why?</h3>
+        <p>Try to be narrow and specific with your topic, it should give better results</p>
         <h3>There are bugs!</h3>
         <p>I had to implement SubBasic for my NLP course assignment, I then built this just for fun. Please feel free to submit pull requests!</p>
         <br/>
