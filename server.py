@@ -60,6 +60,5 @@ def static_proxy(path):
   return app.send_static_file("static/" + path)
 
 if __name__ == "__main__":
-    app.debug = True
     app.run(environ.get("IP", "0.0.0.0"), int(environ.get("PORT", "8080")))
     
