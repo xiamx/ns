@@ -2,10 +2,6 @@ from os import environ
 from flask import Flask, render_template, request, jsonify, url_for
 import sumbasic
 from newspaper import Article
-from nltk import downloader
-
-packages = ['wordnet', 'punkt', 'stopwords']
-downloader.download(packages)
 
 app = Flask(__name__)
 
