@@ -7,11 +7,13 @@ from nltk.tokenize import sent_tokenize, word_tokenize
 import sys
 import argparse
 import itertools
+import nltk
 from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
 wordnet_lemmatizer = WordNetLemmatizer()
 stop_words = set(stopwords.words('english'))
 
+nltk.data.path.append('./nltk_data/')
 
 # helper methods that apply preprocessing on list of strings
 
