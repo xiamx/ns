@@ -21,7 +21,6 @@ var getSummary = function(){
           url: 'summarize',
           contentType: "application/json",
           data: JSON.stringify({
-              topic: document.querySelector("#topic").value,
               links: links,
               words: 100
           }),

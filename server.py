@@ -5,14 +5,6 @@ from newspaper import Article
 from celery import Celery
 import lxml
 
-from logentries import LogentriesHandler
-import logging
-
-log = logging.getLogger('logentries')
-log.setLevel(logging.INFO)
-if environ.get("LOGENTRIES"):
-    log.addHandler(LogentriesHandler(environ.get("LOGENTRIES")))
-
 def make_celery(app):
     celery = Celery(app.import_name, broker=app.config['CELERY_BROKER_URL'])
     celery.conf.update(app.config)
@@ -47,10 +39,8 @@ def generate_summary(links, words):
             article.parse()
             if (len(article.text) > 100):
                 lines.append(article.text)
-                log.info("Parsed url " + url)
         except:
             print "Failed to get " + url
-            log.warn("Failed to get " + url)
     
     summary = sumbasic.orig(lines, words)
     return summary
@@ -58,7 +48,7 @@ def generate_summary(links, words):
 @app.route("/summarize", methods=['POST'])
 def summarize():
     params = request.get_json()
-    log.info("Summarize " + params["topic"] + " from " + params["links"])
+    print params["links"]
     summary = generate_summary.delay(params["links"], params["words"]) 
     response = { "summary": summary.get() }
     return jsonify(response)
