@@ -5,10 +5,13 @@ from newspaper import Article
 from celery import Celery
 import lxml
 
+from logentries import LogentriesHandler
 import logging
 
 log = logging.getLogger('logentries')
 log.setLevel(logging.INFO)
+if environ.get("LOGENTRIES"):
+    log.addHandler(LogentriesHandler(environ.get("LOGENTRIES")))
 
 def make_celery(app):
     celery = Celery(app.import_name, broker=app.config['CELERY_BROKER_URL'])
