@@ -11,11 +11,14 @@ celery.conf.update(
 
 @celery.task()
 def generate_summary(links, words):
+    print "Generate Summary " + str(links)
     lines = []
     for url in links[:4]:
         try:
+            print "Download " + url
             article = Article(url)
             article.download()
+            print "Parse " + url
             article.parse()
             if (len(article.text) > 100):
                 lines.append(article.text)
