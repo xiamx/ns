@@ -1,6 +1,7 @@
 from celery import Celery
 from os import environ
 from newspaper import Article
+import gc
 import sumbasic
 
 celery = Celery(__name__, broker=environ.get("REDIS_URL"))
@@ -25,6 +26,8 @@ def generate_summary(links, words):
         except:
             print "Failed to get " + url
             continue
+        
+    gc.collect()
     
     summary = sumbasic.orig(lines, words)
     return summary
