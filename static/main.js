@@ -1,5 +1,6 @@
 google.load('search', '1');
 var newsSearch;
+var searchtopic;
 
 google.setOnLoadCallback(function(){
     google.search.Search.getBranding('branding');
@@ -21,6 +22,7 @@ var getSummary = function(){
           url: 'summarize',
           contentType: "application/json",
           data: JSON.stringify({
+              topic: searchtopic,
               links: links,
               words: 100
           }),
@@ -53,7 +55,7 @@ var getSummary = function(){
     }
     newsSearch = new google.search.NewsSearch();
     newsSearch.setSearchCompleteCallback(this, searchComplete, null);
-    var searchtopic = document.querySelector("#topic").value;
+    searchtopic = document.querySelector("#topic").value;
     newsSearch.execute(searchtopic);
     document.getElementById("summary").innerHTML="Building a summary...";
     
