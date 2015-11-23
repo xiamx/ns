@@ -1,2 +1,2 @@
 web: gunicorn server:app --log-file=-
-worker: celery -A server.celery worker
+worker: celery -A summarizer.celery worker
