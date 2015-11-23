@@ -1,0 +1,24 @@
+body {
+    background-color: #EFECCA;
+}
+
+h1, h2, h3, h4 {
+    color: #046380;
+}
+
+h1 sub {
+    font-size: 40%;
+}
+
+.summary {
+    min-height: 300px;
+    border-style: dashed;
+    border-color: #A7A37E;
+    color:#046380;
+    font-size: 1.5em;
+    padding: 12px 15px;
+}
+
+.sources {
+    font-size: 0.6em;
+}

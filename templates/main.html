@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+    <title>NS - Automatic multi-source news summarizer</title>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" integrity="sha512-dTfge/zgoMYpP7QbHy4gWMEGsbsdZeCXz7irItjcC3sPUFtf0kuFbDz/ixG7ArTxmDjLXDmezHubeNikyKGVyQ==" crossorigin="anonymous">
+
+    <link rel="stylesheet" href="static/style.css">
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css" integrity="sha384-aUGj/X2zp5rLCbBxumKTCw2Z50WgIr1vs/PFN4praOTvYXWlVyh2UtNUU0KAUhAX" crossorigin="anonymous">
+    <script src="https://www.google.com/jsapi"></script>
+    <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>
+
+  </head>
+  <body>
+    <a href="https://github.com/xiamx/ns"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/365986a132ccd6a44c23a9169022c0b5c890c387/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f7265645f6161303030302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png"></a>
+    <div class="container">
+      <h1 class="text-center">ns <sub>a news summerizer</sub></h1>
+        <input type="text" class="form-control input-lg" id="topic" placeholder="Enter a topic to search">
+          <div id="branding"  style="float: left;"></div><br />
+          <div id="summary" class="summary">
+            
+          </div>
+        <h2>FAQ: </h2>
+        <h3>What is this?</h3>
+        <p>An automatic news summary generator</p>
+        <h3>How does it work?</h3>
+        <p>Using Google news api, we get a list of urls of multiple news sources. We then extract the article text from the webpages. SumBasic (Nenkova and Vanderwende 2005) algorithm is used to generate a summary.</p>
+        <h3>There are bugs!</h3>
+        <p>I had to implement SubBasic for my NLP course assignment, I then built this just for fun. Please feel free to submit pull requests!</p>
+        <br/>
+        <p>Mengxuan Xia (xiamx) November 2015</p>
+        <p><a href="https://github.com/xiamx">My github</a></p>
+    </div>
+    <script src="static/main.js"></script>
+  </body>
+</html>
