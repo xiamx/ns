@@ -27,6 +27,7 @@ var getSummary = function(){
           dataType: 'json'
         }).done(function(data){
             var summaryEl = document.getElementById("summary");
+            summaryEl.innerHTML = "";
             var p = document.createElement("p");
             p.innerHTML = data.summary
             summaryEl.appendChild(p);
