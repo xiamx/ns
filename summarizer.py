@@ -1,3 +1,7 @@
+"""
+Celery Task that generates summary
+"""
+
 from celery import Celery
 from os import environ
 from newspaper import Article
@@ -21,13 +25,13 @@ def generate_summary(links, words):
             article.download()
             print "Parse " + url
             article.parse()
-            if (len(article.text) > 100):
+            if len(article.text) > 100:
                 lines.append(article.text)
         except:
             print "Failed to get " + url
             continue
-        
+
     gc.collect()
-    
+
     summary = sumbasic.orig(lines, words)
     return summary
