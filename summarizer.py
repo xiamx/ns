@@ -11,7 +11,8 @@ import sumbasic
 celery = Celery(__name__, broker=environ.get("REDIS_URL"))
 celery.conf.update(
     CELERY_BROKER_URL=environ.get("REDIS_URL"),
-    CELERY_RESULT_BACKEND=environ.get("REDIS_URL")
+    CELERY_RESULT_BACKEND=environ.get("REDIS_URL"),
+    CELERY_REDIS_MAX_CONNECTIONS=5
 )
 
 @celery.task()
