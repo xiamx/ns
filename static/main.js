@@ -13,9 +13,19 @@ var getSummary = function(){
         cxhr.abort();
     }
     var searchComplete = function(){
-        var links = _.map(newsSearch.results, function(r){
+        var majorityLanguage = function(){
+            var languageCount = _.countBy(newsSearch.results, function(r){
+                return r.language;
+            });
+            return _.max(_.pairs(languageCount), function(lancountpair){
+                return lancountpair[1];
+            })[0];
+        }();
+        var links = _.map(_.filter(newsSearch.results, function(r){
+            return r.language === majorityLanguage;
+        }), function(r){
             return unescape(r.url);
-        })
+        });
         
         cxhr = $.ajax({
           type: 'POST',
