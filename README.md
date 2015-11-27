@@ -2,6 +2,8 @@
 
 http://mx-ns.herokuapp.com/
 
+![sample run](https://raw.github.com/xiamx/ns/master/samplerun.png)
+
 #FAQ
 ## What is this?
 
