@@ -2,7 +2,7 @@
 Serves the main html app and the REST api
 """
 from os import environ
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify, abort
 from summarizer import generate_summary
 
 app = Flask(__name__)
@@ -27,6 +27,8 @@ def summarize():
     """
     params = request.get_json()
     print "Summarize " + params["topic"] + " from " + str(params["links"])
+    if not len(params["links"]) > 0:
+        abort(400)
     summary = generate_summary.delay(params["links"], params["words"])
     response = {"summary": summary.get()}
     return jsonify(response)
