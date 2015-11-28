@@ -44,6 +44,14 @@ var getSummary = function() {
                     var p = document.createElement("p");
                     p.innerHTML = data.summary
                     summaryEl.appendChild(p);
+                    
+                    if (data.images && data.images[0]){
+                        var mainimg = document.createElement("img");
+                        mainimg.setAttribute("src", data.images[0])
+                        mainimg.className = "mainimage"
+                        summaryEl.appendChild(mainimg)
+                    }
+                    
                     var sourcesEl = document.createElement("div");
                     sourcesEl.className = "sources";
                     var ul = document.createElement("ul");

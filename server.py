@@ -48,7 +48,10 @@ def get_summary(tid):
     summary = generate_summary.AsyncResult(tid)
     if summary:
         if summary.ready():
-            response = {"summary": summary.get(), "status": "done"}
+            summary = summary.get()
+            response = {"summary": summary[0],
+                        "images": summary[1],
+                        "status": "done"}
             return jsonify(response)
         else:
             response = {"status": "working"}
