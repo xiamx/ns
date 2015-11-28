@@ -14,7 +14,7 @@ def main():
     """
     Render the main html app
     """
-    if environ.get("REDIRECT"):
+    if environ.get("REDIRECT") == "1":
         print "Move to new domain"
         return redirect("http://ns.apps.xiamx.me" + "/", code=301)
     return render_template("main.html")
@@ -31,7 +31,7 @@ def summarize():
       words: 150 // words limit
     }
     """
-    if environ.get("REDIRECT"):
+    if environ.get("REDIRECT") == "1":
         print "Move to new domain"
         return redirect("http://ns.apps.xiamx.me" + "/summarize", code=301)
     params = request.get_json()
