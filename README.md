@@ -2,7 +2,7 @@ NS is an automatic multi-source news summarizer
 
 #Demo
 
-http://mx-ns.herokuapp.com/
+http://ns.apps.xiamx.me/
 
 ![sample run](https://raw.github.com/xiamx/ns/master/samplerun.png)
 

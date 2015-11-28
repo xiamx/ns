@@ -14,8 +14,8 @@ def main():
     """
     Render the main html app
     """
-    if not request.headers["Host"].startswith("ns.apps.xiamx.me"):
-        print "tada"
+    if environ.get("REDIRECT"):
+        print "Move to new domain"
         return redirect("http://ns.apps.xiamx.me" + "/", code=301)
     return render_template("main.html")
 
@@ -31,8 +31,8 @@ def summarize():
       words: 150 // words limit
     }
     """
-    if not request.headers["Host"].startswith("ns.apps.xiamx.me"):
-        print "tada"
+    if environ.get("REDIRECT"):
+        print "Move to new domain"
         return redirect("http://ns.apps.xiamx.me" + "/summarize", code=301)
     params = request.get_json()
     print "Summarize " + params["topic"] + " from " + str(params["links"])
