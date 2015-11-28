@@ -2,16 +2,20 @@
 Serves the main html app and the REST api
 """
 from os import environ
-from flask import Flask, render_template, request, jsonify, abort
+from flask import Flask, render_template, request, jsonify, abort, redirect
 from summarizer import generate_summary
 
 app = Flask(__name__)
+
 
 @app.route("/")
 def main():
     """
     Render the main html app
     """
+    if not request.headers["Host"].startswith("ns.apps.xiamx.me"):
+        print "tada"
+        return redirect("http://ns.apps.xiamx.me" + "/", code=301)
     return render_template("main.html")
 
 @app.route("/summarize", methods=['POST'])
@@ -25,6 +29,9 @@ def summarize():
       words: 150 // words limit
     }
     """
+    if not request.headers["Host"].startswith("ns.apps.xiamx.me"):
+        print "tada"
+        return redirect("http://ns.apps.xiamx.me" + "/summarize", code=301)
     params = request.get_json()
     print "Summarize " + params["topic"] + " from " + str(params["links"])
     if not len(params["links"]) > 0:
