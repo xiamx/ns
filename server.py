@@ -65,5 +65,7 @@ def static_proxy(path):
     return app.send_static_file("static/" + path)
 
 if __name__ == "__main__":
+    if (environ.get("DEBUG")):
+        app.debug = True
     app.secret_key = environ.get("SECRET_KEY")
     app.run(environ.get("IP", "0.0.0.0"), int(environ.get("PORT", "8080")))
