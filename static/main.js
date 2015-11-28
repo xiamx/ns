@@ -31,10 +31,10 @@ var getSummary = function() {
             document.getElementById("summary").innerHTML = "Oops, something went wrong and I can't build a summary";
         }
 
-        var fetchResult = function(ntry) {
+        var fetchResult = function(tid, ntry) {
             var rxhr = $.ajax({
                 type: 'GET',
-                url: 'getsummary',
+                url: 'getsummary' + '/' + tid,
                 contentType: "application/json",
                 dataType: 'json'
             }).done(function(data) {
@@ -61,7 +61,7 @@ var getSummary = function() {
                 }
                 else {
                     if (ntry < 25) {
-                        setTimeout(fetchResult, 1000, ntry + 1);
+                        setTimeout(fetchResult, 1000, tid, ntry + 1);
                     }
                     else {
                         outputfail();
@@ -81,8 +81,8 @@ var getSummary = function() {
                 words: 100
             }),
             dataType: 'json'
-        }).done(function() {
-            fetchResult(0);
+        }).done(function(data) {
+            fetchResult(data.task, 0);
 
         }).fail(outputfail);
 

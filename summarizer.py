@@ -35,4 +35,5 @@ def generate_summary(links, words):
     gc.collect()
 
     summary = sumbasic.orig(lines, words)
+    print "Generate Summary complete for " + str(links)
     return summary

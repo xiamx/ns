@@ -3,7 +3,7 @@ Serves the main html app and the REST api
 """
 from os import environ
 from flask import (Flask, render_template, request, jsonify,
-                   abort, redirect, session)
+                   abort, redirect)
 from summarizer import generate_summary
 
 app = Flask(__name__)
@@ -39,13 +39,13 @@ def summarize():
     if not len(params["links"]) > 0:
         abort(400)
     summary = generate_summary.delay(params["links"], params["words"])
-    session["summary_work"] = summary.task_id
-    return jsonify({"status": "created"}), 201
+    tid = summary.task_id
+    return jsonify({"status": "created", "task": tid}), 201
 
 
-@app.route("/getsummary")
-def get_summary():
-    summary = generate_summary.AsyncResult(session["summary_work"])
+@app.route("/getsummary/<tid>")
+def get_summary(tid):
+    summary = generate_summary.AsyncResult(tid)
     if summary:
         if summary.ready():
             response = {"summary": summary.get(), "status": "done"}
