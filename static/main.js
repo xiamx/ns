@@ -36,6 +36,7 @@ var getSummary = function() {
                 type: 'GET',
                 url: 'getsummary' + '/' + tid,
                 contentType: "application/json",
+                cache: false,
                 dataType: 'json'
             }).done(function(data) {
                 if (data.status === "done") {
