@@ -4,10 +4,12 @@ Serves the main html app and the REST api
 from os import environ
 from flask import (Flask, render_template, request, jsonify,
                    abort, redirect)
+from flask.ext.cors import CORS
 from summarizer import generate_summary
 
-app = Flask(__name__)
 
+app = Flask(__name__)
+CORS(app)
 
 @app.route("/")
 def main():

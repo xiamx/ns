@@ -12,6 +12,18 @@ var getSummary = function() {
     if (cxhr) {
         cxhr.abort();
     }
+    var FEED_URL = "https://news.google.com/news/section?q=election&output=rss"
+    $.get(FEED_URL, function (data) {
+        $(data).find("entry").each(function () { // or "item" or whatever suits your feed
+            var el = $(this);
+    
+            console.log("------------------------");
+            console.log("title      : " + el.find("title").text());
+            console.log("author     : " + el.find("author").text());
+            console.log("description: " + el.find("description").text());
+        });
+    });
+    return;
     var searchComplete = function() {
         var majorityLanguage = function() {
             var languageCount = _.countBy(newsSearch.results, function(r) {

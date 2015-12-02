@@ -9,6 +9,7 @@ from os import environ
 from newspaper import Article
 import gc
 import sumbasic
+import traceback
 
 celery = Celery(__name__, broker=environ.get("REDIS_URL"))
 celery.conf.update(
@@ -48,7 +49,11 @@ def generate_summary(links, words):
     top_images = [job.value[1] for job in jobs if job.value and job.value[1]]
 
     gc.collect()
-
-    summary = sumbasic.orig(lines, words)
+    try:
+        summary = sumbasic.orig(lines, words)
+    except ValueError:
+        print "Generate Summary failed for " + str(links)
+        traceback.print_exc()
+        summary = "Generating summary failed"
     print "Generate Summary complete for " + str(links)
     return summary, top_images
