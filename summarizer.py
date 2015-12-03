@@ -1,6 +1,4 @@
-"""
-Celery Task that generates summary
-"""
+"""Celery Task that generates summary."""
 import gevent
 from gevent import monkey
 monkey.patch_all()
@@ -10,6 +8,8 @@ from newspaper import Article
 import gc
 import sumbasic
 import traceback
+import requests
+import urllib
 
 celery = Celery(__name__, broker=environ.get("REDIS_URL"))
 celery.conf.update(
@@ -17,17 +17,33 @@ celery.conf.update(
     CELERY_RESULT_BACKEND=environ.get("REDIS_URL")
 )
 
+API_ROOT = 'https://api.datamarket.azure.com/Bing/Search/v1/News'
+API_KEY = environ.get("BING_API")
+
+
 @celery.task()
-def generate_summary(links, words):
-    print "Generate Summary " + str(links)
+def generate_summary(topic, words):
+    """Return summary of the topic subjected to word limit."""
+    print "Generate Summary %s" % topic
+
+    def query_links(topic):
+
+        query = urllib.urlencode({
+            "Query": "'" + topic + "'",
+            "NewsSortBy": "'Relevance'",
+            "$format": "json"
+        })
+        url = API_ROOT + "?%s" % query
+        r = requests.get(url, auth=('', API_KEY))
+        return r
+
+    query_job = gevent.spawn(query_links, topic)
+    gevent.joinall([query_job],5000)
+    result = query_job.value.json()
+    links = [x["Url"] for x in result["d"]["results"]]
+
     lines = []
-    """
-    >>> urls = ['www.google.com', 'www.example.com', 'www.python.org']
->>> jobs = [gevent.spawn(socket.gethostbyname, url) for url in urls]
->>> gevent.joinall(jobs, timeout=2)
->>> [job.value for job in jobs]
-    """
-    
+
     def download_and_clean(url):
         try:
             print "Download " + url
@@ -42,7 +58,7 @@ def generate_summary(links, words):
             text = ""
             top_image = ""
         return text, top_image
-    
+
     jobs = [gevent.spawn(download_and_clean, url) for url in links[:4]]
     gevent.joinall(jobs, timeout=10)
     lines = [job.value[0] for job in jobs if job.value and job.value[0] and len(job.value[0]) > 100]

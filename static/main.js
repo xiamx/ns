@@ -1,44 +1,12 @@
-google.load('search', '1');
-var newsSearch;
 var searchtopic;
 
-google.setOnLoadCallback(function() {
-    google.search.Search.getBranding('branding');
-
-});
 var cxhr;
 
 var getSummary = function() {
     if (cxhr) {
         cxhr.abort();
     }
-    var FEED_URL = "https://news.google.com/news/section?q=election&output=rss"
-    $.get(FEED_URL, function (data) {
-        $(data).find("entry").each(function () { // or "item" or whatever suits your feed
-            var el = $(this);
-    
-            console.log("------------------------");
-            console.log("title      : " + el.find("title").text());
-            console.log("author     : " + el.find("author").text());
-            console.log("description: " + el.find("description").text());
-        });
-    });
-    return;
     var searchComplete = function() {
-        var majorityLanguage = function() {
-            var languageCount = _.countBy(newsSearch.results, function(r) {
-                return r.language;
-            });
-            return _.max(_.pairs(languageCount), function(lancountpair) {
-                return lancountpair[1];
-            })[0];
-        }();
-        var links = _.map(_.filter(newsSearch.results, function(r) {
-            return r.language === majorityLanguage;
-        }), function(r) {
-            return unescape(r.url);
-        });
-
         var outputfail = function() {
             document.getElementById("summary").innerHTML = "Oops, something went wrong and I can't build a summary";
         }
@@ -56,14 +24,14 @@ var getSummary = function() {
                     var p = document.createElement("p");
                     p.innerHTML = data.summary
                     summaryEl.appendChild(p);
-                    
+
                     if (data.images && data.images[0]){
                         var mainimg = document.createElement("img");
                         mainimg.setAttribute("src", data.images[0])
                         mainimg.className = "mainimage"
                         summaryEl.appendChild(mainimg)
                     }
-                    
+
                     var sourcesEl = document.createElement("div");
                     sourcesEl.className = "sources";
                     var ul = document.createElement("ul");
@@ -91,13 +59,13 @@ var getSummary = function() {
 
             }).fail(outputfail);
         }
+
         cxhr = $.ajax({
             type: 'POST',
             url: 'summarize',
             contentType: "application/json",
             data: JSON.stringify({
                 topic: searchtopic,
-                links: links,
                 words: 100
             }),
             dataType: 'json'
@@ -107,10 +75,9 @@ var getSummary = function() {
         }).fail(outputfail);
 
     }
-    newsSearch = new google.search.NewsSearch();
-    newsSearch.setSearchCompleteCallback(this, searchComplete, null);
+
     searchtopic = document.querySelector("#topic").value;
-    newsSearch.execute(searchtopic);
+    searchComplete();
     document.getElementById("summary").innerHTML = "Building a summary...";
 
 }
@@ -125,3 +92,4 @@ document.querySelector("#topic").addEventListener(
 
 // document.querySelector("#topic").addEventListener(
 //     "keypress", _.debounce(getSummary, 500))
+
