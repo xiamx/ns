@@ -51,6 +51,7 @@ def get_summary(tid):
             summary = summary.get()
             response = {"summary": summary[0],
                         "images": summary[1],
+                        "links": summary[2],
                         "status": "done"}
             return jsonify(response)
         else:
