@@ -14,6 +14,7 @@ billiard==3.3.0.21
 celery==3.1.19
 certifi==2015.11.20
 cssselect==0.9.1
+distribute==0.6.49
 feedfinder2==0.0.1
 feedparser==5.1.3
 gevent==1.0.2
@@ -34,5 +35,9 @@ pytz==2015.7
 redis==2.10.5
 requests==2.3.0
 six==1.7.3
+stevedore==0.14.1
 tldextract==1.5.1
+virtualenv==1.10.1
+virtualenv-clone==0.2.4
+virtualenvwrapper==4.1.1
 wsgiref==0.1.2
