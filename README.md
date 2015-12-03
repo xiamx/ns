@@ -11,7 +11,7 @@ http://ns.apps.xiamx.me/
 
 An automatic news summary generator
 ##How does it work?
-Using Google news api, we get a list of urls of multiple news sources. We then extract the article text from the webpages. SumBasic (Nenkova and Vanderwende 2005) algorithm is used to generate a summary.</p>
+Using Bing news api, we get a list of urls of multiple news sources. We then extract the article text from the webpages. SumBasic (Nenkova and Vanderwende 2005) algorithm is used to generate a summary.</p>
 
 ## The summary does not make sense, why?
 NS can only summarize news events, the input keywords needs to be a news. In addition, try to be narrow and specific with your topic, it should give better results.
