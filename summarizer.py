@@ -41,6 +41,8 @@ def generate_summary(topic, words):
     gevent.joinall([query_job],5000)
     result = query_job.value.json()
     links = [x["Url"] for x in result["d"]["results"]]
+    # take only the first 4 links
+    links = links[:4]
 
     lines = []
 
