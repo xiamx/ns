@@ -1,15 +1,17 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from __future__ import division
+
 from operator import itemgetter
 from nltk.tokenize import sent_tokenize, word_tokenize
 import sys
 import argparse
 import itertools
 import nltk
+nltk.data.path = ['./nltk_data']
 from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
+from functools import reduce
 wordnet_lemmatizer = WordNetLemmatizer()
 stop_words = set(stopwords.words('english'))
 
@@ -45,13 +47,13 @@ def compact(lines):
     """
     remove empty lines
     """
-    return filter(lambda x: x and not x.isspace(), lines)
+    return [x for x in lines if x and not x.isspace()]
 
 def strip(lines):
     """
     Strip whitespace from input lines
     """
-    return map(lambda x: x.strip(), lines)
+    return [x.strip() for x in lines]
 
 def leading(lines, word_limit):
     sents = to_sents(lines)
@@ -79,8 +81,8 @@ def sum_basic(lines, word_limit, update_non_redundency=True):
         N = len(tokens)
         distinct_words = set(tokens)
         
-        probabilities = map(lambda w: tokens.count(w) / N , distinct_words)
-        return dict(zip(distinct_words, probabilities))
+        probabilities = [tokens.count(w) / N for w in distinct_words]
+        return dict(list(zip(distinct_words, probabilities)))
     
     sents = to_sents(lines)
     tokens = to_tokens(sents)
@@ -92,7 +94,7 @@ def sum_basic(lines, word_limit, update_non_redundency=True):
     
     while len(word_tokenize(summary)) < word_limit:
         weights = weight(sents, pd)
-        highest_weight_sentence = max(zip(sents, weights), key=itemgetter(1))[0]
+        highest_weight_sentence = max(list(zip(sents, weights)), key=itemgetter(1))[0]
         summary += " " + highest_weight_sentence
         if update_non_redundency:
             for token in preprocess(word_tokenize(highest_weight_sentence)):
@@ -115,10 +117,10 @@ if __name__ == "__main__":
     lines = compact(strip(handle_unicode(flatten(nestedlines))))
     
     if args.method == "orig":
-        print orig(lines, 100)
+        print(orig(lines, 100))
     elif args.method == "simplified":
-        print simplified(lines, 100)
+        print(simplified(lines, 100))
     elif args.method == "leading":
-        print simplified(lines, 100)
+        print(simplified(lines, 100))
     
     

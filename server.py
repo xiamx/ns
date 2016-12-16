@@ -12,7 +12,7 @@ app = Flask(__name__)
 def main():
     """Return html render of the main app."""
     if environ.get("REDIRECT") == "1":
-        print "Move to new domain"
+        print("Move to new domain")
         return redirect("http://ns.apps.xiamx.me" + "/", code=301)
     return render_template("main.html")
 
@@ -32,11 +32,11 @@ def summarize():
 
     """
     if environ.get("REDIRECT") == "1":
-        print "Move to new domain"
+        print("Move to new domain")
         return redirect("http://ns.apps.xiamx.me" + "/summarize", code=301)
     params = request.get_json()
 
-    print "Summarize %s" % params["topic"]
+    print("Summarize %s" % params["topic"])
     summary = generate_summary.delay(params["topic"], params["words"])
     tid = summary.task_id
     return jsonify({"status": "created", "task": tid}), 201
@@ -52,6 +52,7 @@ def get_summary(tid):
             response = {"summary": summary[0],
                         "images": summary[1],
                         "links": summary[2],
+                        "names": summary[3],
                         "status": "done"}
             return jsonify(response)
         else:

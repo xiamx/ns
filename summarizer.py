@@ -1,4 +1,5 @@
 """Celery Task that generates summary."""
+
 import gevent
 from gevent import monkey
 monkey.patch_all()
@@ -9,54 +10,55 @@ import gc
 import sumbasic
 import traceback
 import requests
-import urllib
+import urllib.request, urllib.parse, urllib.error
 
-celery = Celery(__name__, broker=environ.get("REDIS_URL"))
+celery = Celery(__name__, broker=environ.get("REDIS_URL") or "amqp://ns:ns@localhost:5672//")
 celery.conf.update(
-    CELERY_BROKER_URL=environ.get("REDIS_URL"),
-    CELERY_RESULT_BACKEND=environ.get("REDIS_URL")
+    CELERY_BROKER_URL=environ.get("REDIS_URL") or "amqp://ns:ns@localhost:5672//",
+    CELERY_RESULT_BACKEND=environ.get("REDIS_URL") or "amqp://ns:ns@localhost:5672//"
 )
 
-API_ROOT = 'https://api.datamarket.azure.com/Bing/Search/v1/News'
+API_ROOT = 'https://api.cognitive.microsoft.com/bing/v5.0/news/search'
 API_KEY = environ.get("BING_API")
 
 
 @celery.task()
 def generate_summary(topic, words):
     """Return summary of the topic subjected to word limit."""
-    print "Generate Summary %s" % topic
+    print("Generate Summary %s" % topic)
 
     def query_links(topic):
 
-        query = urllib.urlencode({
-            "Query": "'" + topic + "'",
-            "NewsSortBy": "'Relevance'",
-            "$format": "json"
+        query = urllib.parse.urlencode({
+            "q": "'" + topic + "'",
+            "count": 4
         })
+        headers = {
+            "Ocp-Apim-Subscription-Key": API_KEY
+        }
         url = API_ROOT + "?%s" % query
-        r = requests.get(url, auth=('', API_KEY))
+        r = requests.get(url, headers=headers)
         return r
 
     query_job = gevent.spawn(query_links, topic)
     gevent.joinall([query_job],5000)
     result = query_job.value.json()
-    links = [x["Url"] for x in result["d"]["results"]]
-    # take only the first 4 links
-    links = links[:4]
+    links = [x["url"] for x in result["value"]]
+    names = [x["name"] for x in result["value"]]
 
     lines = []
 
     def download_and_clean(url):
         try:
-            print "Download " + url
+            print("Download " + url)
             article = Article(url)
             article.download()
-            print "Parse " + url
+            print("Parse " + url)
             article.parse()
             text = article.text
             top_image = article.top_image
         except:
-            print "Failed to get " + url
+            print("Failed to get " + url)
             text = ""
             top_image = ""
         return text, top_image
@@ -70,8 +72,8 @@ def generate_summary(topic, words):
     try:
         summary = sumbasic.orig(lines, words)
     except ValueError:
-        print "Generate Summary failed for " + str(links)
+        print("Generate Summary failed for " + str(links))
         traceback.print_exc()
         summary = "Generating summary failed"
-    print "Generate Summary complete for " + str(links)
-    return summary, top_images, links
+    print("Generate Summary complete for " + str(links))
+    return summary, top_images, links, names

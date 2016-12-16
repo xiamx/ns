@@ -37,9 +37,10 @@ var getSummary = function() {
                     sourcesEl.className = "sources";
                     var ul = document.createElement("ul");
                     var links = data.links
-                    var lis = _.map(links, function(l) {
+                    var names = data.names
+                    var lis = _.map(_.zip(links, names), function(linkNamePair) {
                         var li = document.createElement("li");
-                        li.innerHTML = l;
+                        li.innerHTML = '<a href="' + linkNamePair[0] + '">' + linkNamePair[1] + '</a>';
                         return li
                     });
                     _.each(lis, ul.appendChild, ul);
