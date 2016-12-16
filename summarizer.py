@@ -12,10 +12,10 @@ import traceback
 import requests
 import urllib.request, urllib.parse, urllib.error
 
-celery = Celery(__name__, broker=environ.get("REDIS_URL") or "amqp://ns:ns@localhost:5672//")
+celery = Celery(__name__, broker=environ.get("RABBITMQ_URL") or "amqp://ns:ns@localhost:5672//")
 celery.conf.update(
-    CELERY_BROKER_URL=environ.get("REDIS_URL") or "amqp://ns:ns@localhost:5672//",
-    CELERY_RESULT_BACKEND=environ.get("REDIS_URL") or "amqp://ns:ns@localhost:5672//"
+    CELERY_BROKER_URL=environ.get("RABBITMQ_URL") or "amqp://ns:ns@localhost:5672//",
+    CELERY_RESULT_BACKEND=environ.get("RABBITMQ_URL") or "amqp://ns:ns@localhost:5672//"
 )
 
 API_ROOT = 'https://api.cognitive.microsoft.com/bing/v5.0/news/search'
