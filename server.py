@@ -1,9 +1,12 @@
 """Serves the main html app and the REST api."""
 from os import environ
+
+from datetime import datetime, timedelta
 from flask import (Flask, render_template, request, jsonify,
                    abort, redirect)
 from summarizer import generate_summary
-
+from database import db, Summary
+from peewee import DoesNotExist
 
 app = Flask(__name__)
 
@@ -37,9 +40,27 @@ def summarize():
     params = request.get_json()
 
     print("Summarize %s" % params["topic"])
-    summary = generate_summary.delay(params["topic"], params["words"])
-    tid = summary.task_id
-    return jsonify({"status": "created", "task": tid}), 201
+
+    try:
+        cached_summary = Summary.select().where(
+            Summary.topic == params["topic"],
+            Summary.last_updated.between(
+                datetime.today() - timedelta(days=3),
+                datetime.today()
+            )
+        ).order_by(Summary.last_updated.desc()).get()
+        print("Summary found in database")
+        return jsonify({
+            "summary": cached_summary.summary,
+            "images": cached_summary.images,
+            "links": cached_summary.links,
+            "names": cached_summary.names,
+            "status": "done"
+        }), 200
+    except DoesNotExist:
+        summary = generate_summary.delay(params["topic"], params["words"])
+        tid = summary.task_id
+        return jsonify({"status": "created", "task": tid}), 201
 
 
 @app.route("/getsummary/<tid>")
@@ -54,6 +75,18 @@ def get_summary(tid):
                         "links": summary[2],
                         "names": summary[3],
                         "status": "done"}
+
+            db_summary = Summary(
+                topic=summary[4],
+                word_limit=summary[5],
+                summary=summary[0],
+                last_updated=datetime.now(),
+                images=summary[1],
+                links=summary[2],
+                names=summary[3]
+            )
+            db_summary.save()
+
             return jsonify(response)
         else:
             response = {"status": "working"}
@@ -68,6 +101,7 @@ def static_proxy(path):
     return app.send_static_file("static/" + path)
 
 if __name__ == "__main__":
+    db.connect()
     if environ.get("DEBUG"):
         app.debug = True
     app.secret_key = environ.get("SECRET_KEY")

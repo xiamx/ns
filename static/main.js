@@ -4,14 +4,51 @@ var cxhr;
 
 var getSummary = function() {
     if (cxhr) {
-        cxhr.abort();
+        try {
+            cxhr.abort();
+        } catch(e) {
+            console.warn(e)
+        }
     }
-    var searchComplete = function() {
-        var outputfail = function() {
+    var searchComplete = function () {
+        var outputfail = function () {
             document.getElementById("summary").innerHTML = "Oops, something went wrong and I can't build a summary";
         }
 
-        var fetchResult = function(tid, ntry) {
+        function renderResult(data) {
+            var summaryEl = document.getElementById("summary");
+            summaryEl.innerHTML = "";
+            var p = document.createElement("p");
+            p.innerHTML = data.summary
+            summaryEl.appendChild(p);
+
+            if (data.images && data.images[0]) {
+                var mainimg = document.createElement("img");
+                mainimg.setAttribute("src", data.images[0])
+                mainimg.className = "mainimage"
+                summaryEl.appendChild(mainimg)
+            }
+
+            var sourcesEl = document.createElement("div");
+            sourcesEl.className = "sources";
+            var ul = document.createElement("ul");
+            var links = data.links
+            var names = data.names
+            var lis = _.map(_.zip(links, names), function (linkNamePair) {
+                var li = document.createElement("li");
+                li.innerHTML = '<a href="' + linkNamePair[0] + '">' + linkNamePair[1] + '</a>';
+                return li
+            });
+            _.each(lis, ul.appendChild, ul);
+            var sourcep = document.createElement("p");
+            sourcep.innerHTML = "<br/>Sources:";
+            sourcesEl.appendChild(sourcep);
+            sourcesEl.appendChild(ul);
+            summaryEl.appendChild(sourcesEl);
+        }
+
+
+        var fetchResult = function (tid, ntry) {
             var rxhr = $.ajax({
                 type: 'GET',
                 url: 'getsummary' + '/' + tid,
@@ -20,35 +57,7 @@ var getSummary = function() {
                 dataType: 'json'
             }).done(function(data) {
                 if (data.status === "done") {
-                    var summaryEl = document.getElementById("summary");
-                    summaryEl.innerHTML = "";
-                    var p = document.createElement("p");
-                    p.innerHTML = data.summary
-                    summaryEl.appendChild(p);
-
-                    if (data.images && data.images[0]){
-                        var mainimg = document.createElement("img");
-                        mainimg.setAttribute("src", data.images[0])
-                        mainimg.className = "mainimage"
-                        summaryEl.appendChild(mainimg)
-                    }
-
-                    var sourcesEl = document.createElement("div");
-                    sourcesEl.className = "sources";
-                    var ul = document.createElement("ul");
-                    var links = data.links
-                    var names = data.names
-                    var lis = _.map(_.zip(links, names), function(linkNamePair) {
-                        var li = document.createElement("li");
-                        li.innerHTML = '<a href="' + linkNamePair[0] + '">' + linkNamePair[1] + '</a>';
-                        return li
-                    });
-                    _.each(lis, ul.appendChild, ul);
-                    var sourcep = document.createElement("p");
-                    sourcep.innerHTML = "<br/>Sources:"
-                    sourcesEl.appendChild(sourcep);
-                    sourcesEl.appendChild(ul);
-                    summaryEl.appendChild(sourcesEl);
+                    renderResult(data)
                 }
                 else {
                     if (ntry < 25) {
@@ -57,11 +66,9 @@ var getSummary = function() {
                     else {
                         outputfail();
                     }
-
                 }
-
             }).fail(outputfail);
-        }
+        };
 
         cxhr = $.ajax({
             type: 'POST',
@@ -72,12 +79,16 @@ var getSummary = function() {
                 words: 100
             }),
             dataType: 'json'
-        }).done(function(data) {
-            fetchResult(data.task, 0);
-
+        }).then(function(data) {
+            if (data.summary) {
+                return renderResult(data);
+            } else {
+                console.log('fetching result');
+                return fetchResult(data.task, 0);
+            }
         }).fail(outputfail);
 
-    }
+    };
 
     searchtopic = document.querySelector("#topic").value;
     searchComplete();

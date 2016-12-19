@@ -8,10 +8,14 @@ import sys
 import argparse
 import itertools
 import nltk
-nltk.data.path = ['./nltk_data']
+import os
+from os.path import dirname, join, realpath
+dir_path = dirname(realpath(__file__))
+nltk.data.path = [join(dir_path, 'nltk_data')]
 from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
 from functools import reduce
+
 wordnet_lemmatizer = WordNetLemmatizer()
 stop_words = set(stopwords.words('english'))
 

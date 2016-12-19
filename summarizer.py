@@ -76,4 +76,4 @@ def generate_summary(topic, words):
         traceback.print_exc()
         summary = "Generating summary failed"
     print("Generate Summary complete for " + str(links))
-    return summary, top_images, links, names
+    return summary, top_images, links, names, topic, words
