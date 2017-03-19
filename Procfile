@@ -1,2 +1,2 @@
-web: gunicorn server:app --log-file=-
+web: waitress-serve server:app
 worker: celery -A summarizer.celery worker --autoscale=50,2 -P gevent
